@@ -31,9 +31,7 @@ public class LogInDao {
 				while (rs.next()) {
 					userBean = new UserMasterBean();
 
-					userBean.setuId(rs.getInt("userid"));
-					userBean.setfName(rs.getString("first_name"));
-					userBean.setlName(rs.getString("last_name"));
+//					
 					userBean.setEmail(rs.getString("email_id"));
 					userBean.setPassword(rs.getString("password"));
 

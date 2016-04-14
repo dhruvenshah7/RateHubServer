@@ -9,63 +9,67 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.beans.UserMasterBean;
 import com.dao.UserMasterDao;
+import org.json.simple.JSONObject;
 
 /**
  * Servlet implementation class UserInsertController
  */
 @WebServlet("/UserInsertController")
 public class UserInsertController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public UserInsertController() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public UserInsertController() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-		String fName = request.getParameter("firstName");
-		String lName = request.getParameter("lastName");
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
-		
-		UserMasterBean bean = new UserMasterBean();
-		bean.setfName(fName);
-		bean.setlName(lName);
-		bean.setEmail(email);
-		bean.setPassword(password);
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     * response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        //response.getWriter().append("Served at: ").append(request.getContextPath());
 
-		UserMasterDao dao = new UserMasterDao();
-		boolean flag = dao.insertData(bean);
+        String fName = request.getParameter("first_name");
+        String lName = request.getParameter("last_name");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-		if (flag) {
-			request.getRequestDispatcher("ListController").forward(request, response);
+        UserMasterBean bean = new UserMasterBean();
+        bean.setfName(fName);
+        bean.setlName(lName);
+        bean.setEmail(email);
+        bean.setPassword(password);
 
-		} else {
+        UserMasterDao dao = new UserMasterDao();
+        boolean flag = dao.insertData(bean);
 
-			response.sendRedirect("insertPage.jsp");
+        JSONObject json = new JSONObject();
 
-		}
-	}
+        if (flag) {
+            json.put("Info", "Success");
+            json.put("First_Name", fName);
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+        } else {
+            json.put("Info", "Fail");
+        }
+        response.getWriter().write(json.toString());
+    }
+
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     * response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
+    }
 
 }

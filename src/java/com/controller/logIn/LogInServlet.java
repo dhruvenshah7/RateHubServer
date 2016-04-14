@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.beans.UserMasterBean;
 import com.dao.LogInDao;
+import org.json.simple.JSONObject;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
+
 
 /**
  * Servlet implementation class LogInServlet
@@ -37,8 +37,7 @@ public class LogInServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-
+		
 		System.out.println("Call");
 		Enumeration paramNames = request.getParameterNames();
 		String params[] = new String[2];
@@ -68,11 +67,12 @@ public class LogInServlet extends HttpServlet {
 
 		if (bean != null) {
 
-			json.put("Info", "Success");
+			json.put("Info","Success");
 
 		} else {
 			json.put("Info", "Fail");
 		}
+                response.getWriter().write(json.toString());
 	}
 
 	/**
