@@ -8,7 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.beans.DishMasterBean;
+import com.beans.RatingMasterBean;
 import com.dao.DishMasterDao;
+import com.dao.RatingMasterDao;
+import org.json.simple.JSONObject;
 
 /**
  * Servlet implementation class DishMasterViewController
@@ -32,24 +35,29 @@ public class DishMasterViewController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
 
 		System.out.println(" view controller call");
-		String dishId = request.getParameter("dishId");
+		String dishId = request.getParameter("dishName");
 		System.out.println(dishId);
 
 		DishMasterDao dao = new DishMasterDao();
-		DishMasterBean bean = dao.getData(Integer.parseInt(dishId));
+		DishMasterBean bean = dao.getData(dishId);
+                RatingMasterDao rdao = new RatingMasterDao();
+                RatingMasterBean rBean = rdao.getData(bean.getDishId());
 
-		if (bean != null)
+		JSONObject json = new JSONObject();
 
-		{
-			request.setAttribute("bean", bean);
-			request.getRequestDispatcher("stateView.jsp").forward(request, response);
+		if (bean != null) {
+
+			json.put("desc",bean.getDeshDesc());
+                        json.put("rating", rBean.getRating());
 
 		} else {
-			response.sendRedirect("StateListController");
+			json.put("Info", "Fail");
 		}
+               response.getWriter().write(json.toString());
+              //System.out.println(json.toString());
 	}
 
 	/**

@@ -10,8 +10,17 @@ import java.util.List;
 import com.beans.DishMasterBean;
 import com.util.SqlConnection;
 
+
 public class DishMasterDao {
 
+    public static void main(String[] args) {
+        
+        DishMasterDao dao = new DishMasterDao();
+        dao.getData("Salmon");
+    }
+  
+            
+            
 	public List<DishMasterBean> listData() {
 		// TODO Auto-generated method stub
 
@@ -65,7 +74,7 @@ public class DishMasterDao {
 		return list;
 	}
 
-	public DishMasterBean getData(int dishId) {
+	public DishMasterBean getData(String dishId) {
 		// TODO Auto-generated method stub
 		System.out.println("get Data method call.....");
 		Connection conn = null;
@@ -78,20 +87,24 @@ public class DishMasterDao {
 		if (conn != null) {
 			try {
 				System.out.println(dishId);
-				String viewSQL = ""; // select state.stateid, state.statename,
+				String viewSQL = "select * from dish_master where dish_name = ?"; // select state.stateid, state.statename,
 										// country.countryname,
 										// country.countryid from state inner
 										// join country on country.countryid =
 										// state.countryid where stateid = ?
 				pstmt = conn.prepareStatement(viewSQL);
-				pstmt.setInt(1, dishId);
+				pstmt.setString(1, dishId);
 				rs = pstmt.executeQuery();
 
 				while (rs.next()) {
 					bean.setDishId(rs.getInt("dish_id"));
-					bean.setDishName(rs.getString("dish_name"));
+					bean.setDishName(dishId);
 					bean.setDeshDesc(rs.getString("dish_description"));
-					bean.setDishCatId(rs.getInt("dish_cat_id"));
+					//bean.setDishCatId(rs.getInt("dish_cat_id"));
+                                        
+                                        System.out.println(bean.getDishId());
+                                        System.out.println(bean.getDishName());
+                                        System.out.println(bean.getDeshDesc());
 				}
 
 				System.out.println("while completed");

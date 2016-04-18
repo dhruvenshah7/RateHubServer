@@ -13,6 +13,13 @@ import com.util.SqlConnection;
 
 public class UserMasterDao {
 
+    public static void main(String[] args) {
+        UserMasterDao dao= new UserMasterDao();
+        UserMasterBean bean =new UserMasterBean();
+        bean.setEmail("nirat.joshi32@gmail.com");
+        bean.setPassword("abcd");
+        dao.changePass(bean);
+    }
     public boolean insertData(UserMasterBean bean) {
         // TODO Auto-generated method stub
 
@@ -116,7 +123,7 @@ public class UserMasterDao {
 
         if (conn != null) {
 
-            String sql = "delete from USER_MASTER where id = " + id;
+            String sql = "delete from USER_MASTER where email_id = '" + id+"'";
 
             try {
                 stmt = conn.createStatement();
@@ -183,7 +190,7 @@ public class UserMasterDao {
 
             stmt = conn.createStatement();
 
-            String updateSQL = "update USER_MASSTER set first_name='" + bean.getfName() + "',last_name='"
+            String updateSQL = "update USER_MASTER set first_name='" + bean.getfName() + "',last_name='"
                     + bean.getlName() + "',email_id='" + bean.getEmail() + "',password='" + bean.getPassword()
                     + "' where user_id = '" + bean.getuId() + "'";
 
@@ -247,7 +254,7 @@ public class UserMasterDao {
 
             stmt = conn.createStatement();
 
-            String updateSQL = "update USER_MASSTER set password='" + bean.getPassword()
+            String updateSQL = "update USER_MASTER set password='" + bean.getPassword()
                     + "' where email_id = '" + bean.getEmail() + "'";
 
             System.out.println(updateSQL);
@@ -255,6 +262,7 @@ public class UserMasterDao {
 
             if (result > 0) {
                 flag = true;
+                System.out.println("true");
 
             }
 
