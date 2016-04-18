@@ -48,18 +48,32 @@ public class UserInsertController extends HttpServlet {
         bean.setPassword(password);
 
         UserMasterDao dao = new UserMasterDao();
-        boolean flag = dao.insertData(bean);
+   //     boolean flag = dao.insertData(bean);
 
         JSONObject json = new JSONObject();
+        boolean b = dao.checkEmail(email);
 
-        if (flag) {
-            json.put("Info", "Success");
-            json.put("First_Name", fName);
+        if (b) {
 
-        } else {
-            json.put("Info", "Fail");
-        }
+			json.put("emailChk", "fail");
+
+		} else {
+
+			json.put("emailChk", "Success");
+
+			boolean flag = dao.insertData(bean);
+
+			if (flag) {
+				json.put("Info", "Success");
+
+			} else {
+
+				json.put("Info", "Fail");
+
+			}
+		}
         response.getWriter().write(json.toString());
+        
     }
 
     /**

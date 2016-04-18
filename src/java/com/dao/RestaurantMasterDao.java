@@ -9,198 +9,218 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.beans.RestaurantMasterBean;
+import com.google.gson.JsonArray;
 import com.util.SqlConnection;
+import org.json.simple.JSONObject;
 
 public class RestaurantMasterDao {
+    public static void main(String[] args) {
+        RestaurantMasterDao dao = new RestaurantMasterDao();
+        
+        System.out.println(dao.listData());
+    }
+    public boolean deleteData(String id) {
+        // TODO Auto-generated method stub
+        boolean flag = false;
+        Connection conn = null;
+        Statement stmt = null;
 
-	public boolean deleteData(String id) {
-		// TODO Auto-generated method stub
-		boolean flag = false;
-		Connection conn = null;
-		Statement stmt = null;
+        conn = SqlConnection.getConnection();
 
-		conn = SqlConnection.getConnection();
+        if (conn != null) {
 
-		if (conn != null) {
+            String sql = "delete from RASTAURANT_MASTER where id = " + id;
 
-			String sql = "delete from RESTAURANT_MASTER where id = " + id;
+            try {
+                stmt = conn.createStatement();
+                int result = stmt.executeUpdate(sql);
 
-			try {
-				stmt = conn.createStatement();
-				int result = stmt.executeUpdate(sql);
+                if (result > 0) {
 
-				if (result > 0) {
+                    flag = true;
+                }
+            } catch (SQLException e) {
 
-					flag = true;
-				}
-			} catch (SQLException e) {
+                e.printStackTrace();
+            }
 
-				e.printStackTrace();
-			}
+        } else {
 
-		} else {
+            System.out.println(" Connection Problem.....");
+        }
 
-			System.out.println(" Connection Problem.....");
-		}
+        return flag;
+    }
 
-		return flag;
-	}
+    public RestaurantMasterBean editData(String id) {
+        // TODO Auto-generated method stub
+        RestaurantMasterBean bean = new RestaurantMasterBean();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
-	public RestaurantMasterBean editData(String id) {
-		// TODO Auto-generated method stub
-		RestaurantMasterBean bean = new RestaurantMasterBean();
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
+        conn = SqlConnection.getConnection();
 
-		conn = SqlConnection.getConnection();
+        try {
+            stmt = conn.createStatement();
 
-		try {
-			stmt = conn.createStatement();
+            rs = stmt.executeQuery("select * from RESTAURANT_MASTER where id = " + id);
 
-			rs = stmt.executeQuery("select * from RESTAURANT_MASTER where id = " + id);
+            while (rs.next()) {
 
-			while (rs.next()) {
+                bean.setRestId(rs.getInt("RestId"));
+                bean.setRestName(rs.getString("RestName"));
+                bean.setStreet(rs.getString("Street"));
+                bean.setCity(rs.getString("City"));
+                bean.setProvience(rs.getString("Provience"));
+                bean.setPostalCode(rs.getString("PostalCode"));
 
-				bean.setRestId(rs.getInt("RestId"));
-				bean.setRestName(rs.getString("RestName"));
-				bean.setStreet(rs.getString("Street"));
-				bean.setCity(rs.getString("City"));
-				bean.setProvience(rs.getString("Provience"));
-				bean.setPostalCode(rs.getString("PostalCode"));
+            }
 
-			}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bean;
+    }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return bean;
-	}
+    public boolean insertData(RestaurantMasterBean bean) {
+        // TODO Auto-generated method stub
+        boolean flag = false;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
 
-	public boolean insertData(RestaurantMasterBean bean) {
-		// TODO Auto-generated method stub
-		boolean flag = false;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
+        conn = SqlConnection.getConnection();
 
-		conn = SqlConnection.getConnection();
+        if (conn != null) {
 
-		if (conn != null) {
+            String sql = "insert into USER_MASTER(restName,street,city,province,postalCode) values (?,?,?,?,?)";
 
-			String sql = "insert into USER_MASTER(restName,street,city,province,postalCode) values (?,?,?,?,?)";
+            try {
 
-			try {
+                pstmt = conn.prepareStatement(sql);
 
-				pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, bean.getRestName());
+                pstmt.setString(2, bean.getStreet());
+                pstmt.setString(3, bean.getCity());
+                pstmt.setString(4, bean.getProvience());
+                pstmt.setString(5, bean.getPostalCode());
 
-				pstmt.setString(1, bean.getRestName());
-				pstmt.setString(2, bean.getStreet());
-				pstmt.setString(3, bean.getCity());
-				pstmt.setString(4, bean.getProvience());
-				pstmt.setString(5, bean.getPostalCode());
+                int result = pstmt.executeUpdate();
 
-				int result = pstmt.executeUpdate();
+                if (result != 0) {
 
-				if (result != 0) {
+                    flag = true;
+                }
+            } catch (SQLException e) {
 
-					flag = true;
-				}
-			} catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 
-				e.printStackTrace();
-			} finally {
-				try {
-					pstmt.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+        } else {
 
-		} else {
+            System.out.println("Connection Problem.....");
+        }
 
-			System.out.println("Connection Problem.....");
-		}
+        return flag;
+    }
 
-		return flag;
-	}
+    public List<String> listData() {
+        // TODO Auto-generated method stub
 
-	public List<RestaurantMasterBean> listData() {
-		// TODO Auto-generated method stub
-		
-		List<RestaurantMasterBean> list = new ArrayList<RestaurantMasterBean>();
+        List<RestaurantMasterBean> list = new ArrayList<RestaurantMasterBean>();
 
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
+        JSONObject json = null;
 
-		conn = SqlConnection.getConnection();
+        JsonArray jarray = new JsonArray();
 
-		try {
-			stmt = conn.createStatement();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+ List<String> alist = null;
+        conn = SqlConnection.getConnection();
 
-			rs = stmt.executeQuery("select * from USER_MASTER");
+        try {
+            stmt = conn.createStatement();
 
-			RestaurantMasterBean bean = null;
+            rs = stmt.executeQuery("select * from RESTAURANT_MASTER");
 
-			while (rs.next()) {
+            RestaurantMasterBean bean = null;
+            
+             alist = new ArrayList<String>();
 
-				bean = new RestaurantMasterBean();
+            while (rs.next()) {
 
-				bean.setRestId(rs.getInt("RestId"));
-				bean.setRestName(rs.getString("RestName"));
-				bean.setStreet(rs.getString("Street"));
-				bean.setCity(rs.getString("City"));
-				bean.setProvience(rs.getString("Provience"));
-				bean.setPostalCode(rs.getString("PostalCode"));
+                alist.add(rs.getString("rest_name"));
+//                bean = new RestaurantMasterBean();
+//                json = new JSONObject();
+//
+//                json.put("id", rs.getInt("rest_id"));
+//                json.put("name", rs.getString("rest_name"));
+//
+//                bean.setRestId(rs.getInt("rest_id"));
+//                System.out.println(rs.getInt("rest_id"));
+//                
+//                bean.setRestName(rs.getString("rest_name"));
+////                bean.setStreet(rs.getString("Street"));
+////                bean.setCity(rs.getString("City"));
+////                bean.setProvience(rs.getString("Provience"));
+////                bean.setPostalCode(rs.getString("PostalCode"));
+//
+//                list.add(rs.getInt("rest_id"));
+ //               jarray.add(jarray);
 
-				list.add(bean);
+            }
 
-			}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        return alist;
+    }
 
-		return list;
-	}
+    public boolean updateData(RestaurantMasterBean bean) {
+        // TODO Auto-generated method stub
+        boolean flag = false;
+        Connection conn = null;
+        Statement stmt = null;
 
-	public boolean updateData(RestaurantMasterBean bean) {
-		// TODO Auto-generated method stub
-		boolean flag = false;
-		Connection conn = null;
-		Statement stmt = null;
+        conn = SqlConnection.getConnection();
 
-		conn = SqlConnection.getConnection();
+        try {
 
-		try {
+            stmt = conn.createStatement();
 
-			stmt = conn.createStatement();
+            String updateSQL = "update RESTAURANT_MASSTER set RestName='" + bean.getRestName() + "',Street='"
+                    + bean.getStreet() + "',City='" + bean.getCity() + "',Provience='" + bean.getProvience()
+                    + "',PostalCode='" + bean.getPostalCode() + "' where user_id = '" + bean.getRestId() + "'";
 
-			String updateSQL = "update RESTAURANT_MASSTER set RestName='" + bean.getRestName() + "',Street='"
-					+ bean.getStreet() + "',City='" + bean.getCity() + "',Provience='" + bean.getProvience()
-					+ "',PostalCode='" + bean.getPostalCode()+ "' where user_id = '" + bean.getRestId() + "'";
+            System.out.println(updateSQL);
+            int result = stmt.executeUpdate(updateSQL);
 
-			System.out.println(updateSQL);
-			int result = stmt.executeUpdate(updateSQL);
+            if (result > 0) {
+                flag = true;
 
-			if (result > 0) {
-				flag = true;
+            }
 
-			}
+        } catch (SQLException e) {
 
-		} catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-			e.printStackTrace();
-		}
-
-		return flag;
-	}
+        return flag;
+    }
 
 }
